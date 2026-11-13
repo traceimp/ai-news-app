@@ -33,12 +33,17 @@ export function NewsCard({ article }: { article: ArticleWithCategory }) {
       </div>
 
       <h3 className="break-keep text-base font-semibold leading-snug text-slate-900 sm:text-lg dark:text-neutral-100">
-        {article.titleKo}
+        {article.titleKo ?? article.originalTitle}
       </h3>
 
-      <p className="line-clamp-3 break-keep text-sm leading-relaxed text-slate-700 dark:text-neutral-300">
-        {article.summaryKo}
-      </p>
+      {article.summaryKo ? (
+        <p className="line-clamp-3 break-keep text-sm leading-relaxed text-slate-700 dark:text-neutral-300">
+          {article.summaryKo}
+        </p>
+      ) : (
+        // 번역은 수집과 분리된 별도 단계에서 채운다.
+        <p className="text-sm text-slate-500 dark:text-neutral-400">번역 대기 중</p>
+      )}
 
       <div className="mt-auto flex items-center justify-between gap-2 pt-2">
         <a

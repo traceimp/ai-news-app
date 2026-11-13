@@ -51,7 +51,7 @@ Clerk 키(publishable / secret), `DATABASE_URL`(Neon), `ANTHROPIC_API_KEY`, Noti
 
 ### 데이터 모델 (Drizzle)
 - **categories**: `id`(PK), `userId`, `name`, `createdAt`. `userId+name` 유니크.
-- **articles**: `id`(PK), `userId`, `source`(TechCrunch / The Verge), `originalUrl`, `originalTitle`, `titleKo`, `summaryKo`, `categoryId`(categories FK, 삭제 시 null = "미분류"), `publishedAt`, `notionPageUrl`(null이면 미저장), `createdAt`. `userId+originalUrl` 유니크.
+- **articles**: `id`(PK), `userId`, `source`(TechCrunch / The Verge), `originalUrl`, `originalTitle`, `originalSummary`(RSS 원문 설명, null 가능), `titleKo`/`summaryKo`(null이면 아직 번역 전), `categoryId`(categories FK, 삭제 시 null = "미분류"), `publishedAt`, `notionPageUrl`(null이면 미저장), `createdAt`. `userId+originalUrl` 유니크.
 
 ### 뉴스 소스 (RSS)
 | 소스 | URL |
@@ -60,6 +60,8 @@ Clerk 키(publishable / secret), `DATABASE_URL`(Neon), `ANTHROPIC_API_KEY`, Noti
 | The Verge AI | https://www.theverge.com/rss/ai-artificial-intelligence/index.xml |
 
 ### 뉴스 가져오기 흐름
+> 구현 현황: 수집(`src/lib/rss/`, `src/app/dashboard/actions.ts`)과 번역·분류는 **분리**되어 있다. 수집은 최근 24시간·피드당 최대 20건을 `titleKo`/`summaryKo`=null로 저장만 하고(`ON CONFLICT DO NOTHING`), 번역·요약·분류(아래 3번)는 `titleKo IS NULL`인 기사를 대상으로 하는 별도 단계에서 처리한다(미구현).
+
 1. '뉴스 가져오기' 버튼 클릭 시에만 실행 → 두 RSS 피드 조회, 피드당 최신 N개(기본값 예: 10)만 대상. 가져오기 건수에 상한을 둔다.
 2. 이미 저장된 기사(사용자별 `originalUrl` 기준)는 Claude 호출 없이 건너뜀 (비용 절감).
 3. 신규 기사마다 Claude를 한 번 호출해 한국어 제목, 한국어 요약, 카테고리를 JSON으로 받고 **JSON 스키마로 검증**한다.

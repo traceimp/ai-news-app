@@ -28,8 +28,11 @@ export const articles = pgTable(
     source: text("source").notNull(), // TechCrunch / The Verge
     originalUrl: text("original_url").notNull(),
     originalTitle: text("original_title").notNull(),
-    titleKo: text("title_ko").notNull(),
-    summaryKo: text("summary_ko").notNull(),
+    // RSS 원문 설명(HTML 제거본). 번역·요약 단계의 입력으로 쓴다.
+    originalSummary: text("original_summary"),
+    // null이면 아직 번역되지 않은 기사 (번역은 수집과 분리된 별도 단계)
+    titleKo: text("title_ko"),
+    summaryKo: text("summary_ko"),
     // 카테고리 삭제 시 null = "미분류"
     categoryId: integer("category_id").references(() => categories.id, {
       onDelete: "set null",

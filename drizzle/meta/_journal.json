@@ -15,6 +15,13 @@
       "when": 1794107611710,
       "tag": "0001_left_moira_mactaggert",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794542790058,
+      "tag": "0002_rss_original_summary",
+      "breakpoints": true
     }
   ]
 }
