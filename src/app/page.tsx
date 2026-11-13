@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default function Home() {
@@ -24,8 +25,14 @@ export default function Home() {
         </main>
       </Show>
       <Show when="signed-in">
-        <main className="flex flex-1 items-center justify-center p-6">
-          <p>로그인되었습니다. 뉴스 기능은 다음 단계에서 구현합니다.</p>
+        <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
+          <p>로그인되었습니다.</p>
+          <Link
+            href="/dashboard"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            대시보드로 이동
+          </Link>
         </main>
       </Show>
     </>
