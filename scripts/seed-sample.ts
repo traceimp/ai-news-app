@@ -1,9 +1,12 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-// 예제 데이터 입력/삭제 스크립트. 실제 사용자와 분리하기 위해 userId는 "sample-user"만 쓴다.
-// 사용법: npx tsx scripts/seed-sample.ts [--clean]
-const USER_ID = "sample-user";
+// 예제 데이터 입력/삭제 스크립트. 기본 userId는 실제 사용자와 분리된 "sample-user"다.
+// 내 대시보드에서 보려면 --user=<Clerk userId>(user_...)를 지정한다.
+// 사용법: npx tsx scripts/seed-sample.ts [--user=user_xxx] [--clean]
+const USER_ID =
+  process.argv.find((a) => a.startsWith("--user="))?.slice("--user=".length) ||
+  "sample-user";
 
 const CATEGORY_NAMES = ["모델/제품", "연구", "투자·비즈니스", "규제·윤리"];
 
@@ -102,7 +105,7 @@ async function main() {
 
   console.log(`카테고리 ${cats.length}건 확인, 기사 신규 ${inserted.length}건 / 건너뜀 ${SAMPLE_ARTICLES.length - inserted.length}건`);
   const total = await db.select().from(articles).where(and(eq(articles.userId, USER_ID)));
-  console.log(`sample-user 기사 총 ${total.length}건`);
+  console.log(`${USER_ID} 기사 총 ${total.length}건`);
   process.exit(0);
 }
 
