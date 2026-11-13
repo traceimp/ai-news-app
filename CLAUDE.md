@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `PRD.md`가 제품 명세(한국어)의 기준 문서다. 현재는 `create-next-app`으로 만든 Next.js 16 보일러플레이트(App Router, `src/`, Tailwind v4, TypeScript, npm)만 있고 앱 코드는 아직 없다. 새 기능을 구현하기 전에 PRD의 해당 절을 읽는다.
 
+UI를 만들거나 수정할 때는 `ui.md`(UI 가이드: 디자인 토큰, 대시보드 레이아웃, 카테고리 바, 뉴스 카드 스타일)를 먼저 읽고 따른다. 스타일 규칙이 바뀌면 `ui.md`도 함께 갱신한다.
+
 ### 개발 단계 (PRD 12절, 이 순서로 진행)
 1. Next.js 초기화 + Clerk 로그인
 2. Neon + Drizzle 스키마/마이그레이션
