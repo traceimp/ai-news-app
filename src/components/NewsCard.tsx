@@ -1,4 +1,5 @@
 import type { ArticleWithCategory } from "@/db/queries";
+import { getCategoryColor } from "@/lib/category-colors";
 
 // 발행일을 한국 시간 기준 YYYY.MM.DD로 표시한다.
 function formatDate(date: Date) {
@@ -14,9 +15,7 @@ function formatDate(date: Date) {
 
 export function NewsCard({ article }: { article: ArticleWithCategory }) {
   const categoryName = article.categoryName ?? "미분류";
-  const badgeClass = article.categoryName
-    ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-    : "bg-slate-100 text-slate-600 dark:bg-neutral-800 dark:text-neutral-300";
+  const badgeClass = getCategoryColor(article.categoryName ? article.categoryColor : null).badge;
 
   return (
     <article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">

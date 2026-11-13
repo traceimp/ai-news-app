@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { getCategoryColor, UNCATEGORIZED_COLOR } from "@/lib/category-colors";
+import { AddCategoryButton } from "./AddCategoryButton";
 
 export type CategoryFilter = "all" | "uncategorized" | number;
 
 type Props = {
-  categories: { id: number; name: string }[];
+  categories: { id: number; name: string; color: string | null }[];
   counts: { total: number; uncategorized: number; byCategory: Map<number, number> };
   selected: CategoryFilter;
 };
@@ -17,11 +19,13 @@ const chipSelected = "border-indigo-600 bg-indigo-600 text-white";
 function Chip({
   href,
   label,
+  dot,
   count,
   active,
 }: {
   href: string;
   label: string;
+  dot?: string; // 카테고리 색상 점 (전체에는 없음)
   count: number;
   active: boolean;
 }) {
@@ -31,6 +35,13 @@ function Chip({
       aria-current={active ? "true" : undefined}
       className={`${chipBase} ${active ? chipSelected : chipIdle}`}
     >
+      {dot && (
+        // 선택된 칩(인디고 배경)에서도 색이 보이도록 흰 테두리를 둔다.
+        <span
+          aria-hidden
+          className={`mr-2 inline-block size-2.5 rounded-full align-baseline ${dot} ${active ? "ring-2 ring-white" : ""}`}
+        />
+      )}
       {label} <span className="text-xs opacity-70">{count}</span>
     </Link>
   );
@@ -51,6 +62,7 @@ export function CategoryBar({ categories, counts, selected }: Props) {
           key={c.id}
           href={`/dashboard?category=${c.id}`}
           label={c.name}
+          dot={getCategoryColor(c.color).dot}
           count={counts.byCategory.get(c.id) ?? 0}
           active={selected === c.id}
         />
@@ -58,18 +70,11 @@ export function CategoryBar({ categories, counts, selected }: Props) {
       <Chip
         href="/dashboard?category=uncategorized"
         label="미분류"
+        dot={UNCATEGORIZED_COLOR.dot}
         count={counts.uncategorized}
         active={selected === "uncategorized"}
       />
-      {/* 카테고리 추가는 3단계(카테고리 CRUD)에서 구현한다. */}
-      <button
-        type="button"
-        disabled
-        title="카테고리 추가는 다음 단계에서 구현합니다"
-        className="rounded-full border border-dashed border-slate-300 px-4 py-1.5 text-sm text-slate-500 hover:border-indigo-600 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-slate-300 disabled:hover:text-slate-500 dark:border-neutral-700 dark:text-neutral-400"
-      >
-        + 카테고리 추가
-      </button>
+      <AddCategoryButton />
     </nav>
   );
 }

@@ -1,5 +1,6 @@
 import "server-only";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { CATEGORY_PALETTE, pickUnusedColor } from "@/lib/category-colors";
 import { db } from "./index";
 import { articles, categories } from "./schema";
 
@@ -7,7 +8,7 @@ import { articles, categories } from "./schema";
 
 export async function getCategories(userId: string) {
   return db
-    .select({ id: categories.id, name: categories.name })
+    .select({ id: categories.id, name: categories.name, color: categories.color })
     .from(categories)
     .where(eq(categories.userId, userId))
     .orderBy(asc(categories.createdAt), asc(categories.id));
@@ -59,6 +60,7 @@ export async function getArticlePage(
       summaryKo: articles.summaryKo,
       categoryId: articles.categoryId,
       categoryName: categories.name,
+      categoryColor: categories.color,
       publishedAt: articles.publishedAt,
       notionPageUrl: articles.notionPageUrl,
     })
@@ -93,6 +95,71 @@ export async function insertNewArticles(userId: string, items: NewArticle[]) {
     .onConflictDoNothing({ target: [articles.userId, articles.originalUrl] })
     .returning({ id: articles.id });
   return inserted.length;
+}
+
+export const DEFAULT_CATEGORIES = ["모델/제품", "연구", "투자·비즈니스", "규제·윤리"];
+
+// 처음 쓰는 사용자(카테고리가 하나도 없음)에게만 기본 카테고리를 만들어 준다.
+// 사용자가 모두 지운 뒤에도 다시 생기지는 않도록 "비어 있을 때만" 만들지만,
+// 동시 실행에 대비해 ON CONFLICT DO NOTHING을 쓴다.
+export async function ensureDefaultCategories(userId: string) {
+  const existing = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(eq(categories.userId, userId))
+    .limit(1);
+  if (existing.length > 0) return;
+  await db
+    .insert(categories)
+    .values(
+      DEFAULT_CATEGORIES.map((name, i) => ({
+        userId,
+        name,
+        color: CATEGORY_PALETTE[i % CATEGORY_PALETTE.length].key,
+      })),
+    )
+    .onConflictDoNothing({ target: [categories.userId, categories.name] });
+}
+
+// 새 카테고리를 만들고, 이 사용자가 쓰지 않는 색을 배정한다.
+// 같은 이름이 이미 있으면 null을 돌려준다.
+export async function addCategory(userId: string, name: string) {
+  const used = await db
+    .select({ color: categories.color })
+    .from(categories)
+    .where(eq(categories.userId, userId));
+  const color = pickUnusedColor(used.map((row) => row.color));
+  const [created] = await db
+    .insert(categories)
+    .values({ userId, name, color })
+    .onConflictDoNothing({ target: [categories.userId, categories.name] })
+    .returning({ id: categories.id });
+  return created ?? null;
+}
+
+// 번역 전(titleKo가 null)인 기사. 최신 발행일부터 처리하고, 한 번에 처리할 양에 상한을 둔다.
+export async function getUntranslatedArticles(userId: string, limit = 60) {
+  return db
+    .select({
+      id: articles.id,
+      originalTitle: articles.originalTitle,
+      originalSummary: articles.originalSummary,
+    })
+    .from(articles)
+    .where(and(eq(articles.userId, userId), isNull(articles.titleKo)))
+    .orderBy(sql`${articles.publishedAt} desc nulls last`, desc(articles.id))
+    .limit(limit);
+}
+
+export async function updateArticleTranslation(
+  userId: string,
+  articleId: number,
+  data: { titleKo: string; summaryKo: string; categoryId: number | null },
+) {
+  await db
+    .update(articles)
+    .set(data)
+    .where(and(eq(articles.userId, userId), eq(articles.id, articleId)));
 }
 
 export type ArticleWithCategory = Awaited<ReturnType<typeof getArticlePage>>[number];

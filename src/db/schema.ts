@@ -13,6 +13,8 @@ export const categories = pgTable(
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     userId: text("user_id").notNull(),
     name: text("name").notNull(),
+    // 색상 팔레트 키(src/lib/category-colors.ts). 사용자 안에서 서로 겹치지 않게 배정한다.
+    color: text("color"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

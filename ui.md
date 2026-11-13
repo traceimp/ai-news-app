@@ -82,6 +82,7 @@
   - 기본: `rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-700 hover:bg-slate-100 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800`
   - 선택됨: `border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-600` 그리고 `aria-pressed="true"`
   - 칩 안에 해당 카테고리 기사 수를 작게 덧붙일 수 있다(예: `연구 12`, `text-xs opacity-70`).
+- **카테고리 색상**: 카테고리마다 서로 다른 색을 배정한다. 팔레트 10색(`src/lib/category-colors.ts`: sky, emerald, amber, rose, violet, orange, teal, fuchsia, lime, stone)에서 사용자가 쓰지 않는 색을 새 카테고리에 자동으로 고르고(`categories.color`에 키 저장), 10개를 넘으면 가장 적게 쓴 색을 재사용한다. 칩 앞에 색 점, 뉴스 카드의 카테고리 배지에 같은 색 톤을 쓴다. 인디고는 선택 상태 전용이라 팔레트에서 뺐고, 미분류는 회색(`slate`)이다.
 - **카테고리 추가 버튼**:
   - 칩과 같은 크기이되 점선 테두리로 구분한다: `rounded-full border border-dashed border-slate-300 px-4 py-1.5 text-sm text-slate-500 hover:border-indigo-600 hover:text-indigo-600`
   - 문구는 `+ 카테고리 추가`. 아이콘만 쓰지 않고 텍스트를 함께 둔다.
@@ -141,7 +142,7 @@
 
 - 카드 높이는 그리드 안에서 맞춰지도록 `flex flex-col` + 하단 줄에 `mt-auto`를 쓴다.
 - 원문 링크는 `target="_blank" rel="noopener noreferrer"`로 연다.
-- 카테고리 배지: 기본은 인디고 톤, **미분류**는 `bg-slate-100 text-slate-600`으로 구분한다.
+- 카테고리 배지: 카테고리 색상 톤(4.2 참고), **미분류**는 `bg-slate-100 text-slate-600`으로 구분한다.
 - 날짜는 `YYYY.MM.DD` 형식(한국어 로케일)으로 표시한다.
 
 ### 5.3 Notion 저장 상태

@@ -32,13 +32,19 @@ export function FetchNewsButton() {
       <div aria-live="polite">
         {isPending && (
           <p className="text-sm text-slate-500 dark:text-neutral-400">
-            최근 24시간 뉴스를 가져오고 있어요…
+            최근 24시간 뉴스를 가져와 한국어로 번역·요약하고 있어요. 기사가 많으면 1~2분 걸릴 수 있어요…
           </p>
         )}
 
         {result?.ok && (
           <p className="rounded-lg bg-indigo-50 px-4 py-3 text-sm text-slate-700 dark:bg-indigo-950 dark:text-neutral-300">
-            신규 {result.added}건 · 건너뜀 {result.skipped}건
+            신규 {result.added}건 · 건너뜀 {result.skipped}건 · 번역 {result.translated}건
+            {result.failed > 0 && (
+              <>
+                {" · "}
+                <span className="text-red-600">번역 실패 {result.failed}건</span>
+              </>
+            )}
             {result.failedSources.length > 0 && (
               <>
                 {" · "}
@@ -47,6 +53,12 @@ export function FetchNewsButton() {
                 </span>
               </>
             )}
+          </p>
+        )}
+
+        {result?.ok && result.aiError && (
+          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {result.aiError}
           </p>
         )}
 

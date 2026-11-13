@@ -11,6 +11,9 @@ import { FetchNewsButton } from "@/components/FetchNewsButton";
 // 한 페이지에 보여줄 뉴스 카드 수 (3열 그리드에서 3줄)
 const PAGE_SIZE = 9;
 
+// 뉴스 가져오기(Server Action)가 수집 + Claude 번역까지 하므로 실행 시간 상한을 늘린다.
+export const maxDuration = 300;
+
 export const metadata: Metadata = {
   title: "대시보드 | AI 뉴스 수집기",
 };

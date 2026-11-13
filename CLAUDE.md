@@ -60,7 +60,7 @@ Clerk 키(publishable / secret), `DATABASE_URL`(Neon), `ANTHROPIC_API_KEY`, Noti
 | The Verge AI | https://www.theverge.com/rss/ai-artificial-intelligence/index.xml |
 
 ### 뉴스 가져오기 흐름
-> 구현 현황: 수집(`src/lib/rss/`, `src/app/dashboard/actions.ts`)과 번역·분류는 **분리**되어 있다. 수집은 최근 24시간·피드당 최대 20건을 `titleKo`/`summaryKo`=null로 저장만 하고(`ON CONFLICT DO NOTHING`), 번역·요약·분류(아래 3번)는 `titleKo IS NULL`인 기사를 대상으로 하는 별도 단계에서 처리한다(미구현).
+> 구현 현황: 수집(`src/lib/rss/`, `src/app/dashboard/actions.ts`)과 번역·분류는 **분리**되어 있다. 수집은 최근 24시간·피드당 최대 20건을 `titleKo`/`summaryKo`=null로 저장만 하고(`ON CONFLICT DO NOTHING`), 번역·요약·분류(아래 3번)는 `titleKo IS NULL`인 기사를 대상으로 하는 별도 단계에서 처리한다(`src/lib/ai/`, 모델 `claude-haiku-5-5`, 요약 2~3문장, 동시 3건; '뉴스 가져오기' 액션이 수집 직후 이어서 실행하고 실패 기사는 다음 실행 때 재시도).
 
 1. '뉴스 가져오기' 버튼 클릭 시에만 실행 → 두 RSS 피드 조회, 피드당 최신 N개(기본값 예: 10)만 대상. 가져오기 건수에 상한을 둔다.
 2. 이미 저장된 기사(사용자별 `originalUrl` 기준)는 Claude 호출 없이 건너뜀 (비용 절감).
