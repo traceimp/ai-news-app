@@ -162,4 +162,29 @@ export async function updateArticleTranslation(
     .where(and(eq(articles.userId, userId), eq(articles.id, articleId)));
 }
 
-export type ArticleWithCategory = Awaited<ReturnType<typeof getArticlePage>>[number];
+export async function getArticleForNotion(userId: string, articleId: number) {
+  const [row] = await db
+    .select({
+      titleKo: articles.titleKo,
+      summaryKo: articles.summaryKo,
+      source: articles.source,
+      originalUrl: articles.originalUrl,
+      publishedAt: articles.publishedAt,
+      notionPageUrl: articles.notionPageUrl,
+      categoryName: categories.name,
+    })
+    .from(articles)
+    .leftJoin(categories, eq(articles.categoryId, categories.id))
+    .where(and(eq(articles.userId, userId), eq(articles.id, articleId)))
+    .limit(1);
+  return row ?? null;
+}
+
+export async function setArticleNotionUrl(userId: string, articleId: number, url: string) {
+  await db
+    .update(articles)
+    .set({ notionPageUrl: url })
+    .where(and(eq(articles.userId, userId), eq(articles.id, articleId)));
+}
+
+export type ArticleWithCategory =Awaited<ReturnType<typeof getArticlePage>>[number];
