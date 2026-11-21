@@ -149,6 +149,7 @@
 </article>
 ```
 
+- **삭제 버튼**: 카드(`relative`) 오른쪽 상단에 X 아이콘 버튼(`DeleteArticleButton`, `absolute right-2 top-2 size-7`, `aria-label="뉴스 삭제"`)을 둔다. 누르면 DB에서 해당 기사를 삭제(본인 `userId` 소유만)하고 목록을 다시 불러와 카드가 사라진다. 삭제 중에는 비활성화, 실패 시 카드 안에 `text-xs text-red-600`로 사유를 보여준다. 상단 줄은 겹치지 않도록 `pr-6`을 둔다.
 - 카드 높이는 그리드 안에서 맞춰지도록 `flex flex-col` + 하단 줄에 `mt-auto`를 쓴다.
 - 원문 링크는 `target="_blank" rel="noopener noreferrer"`로 연다.
 - 카테고리 배지: 카테고리 색상 톤(4.2 참고), **미분류**는 `bg-slate-100 text-slate-600`으로 구분한다.

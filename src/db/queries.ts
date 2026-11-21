@@ -204,4 +204,13 @@ export async function setArticleNotionUrl(userId: string, articleId: number, url
     .where(and(eq(articles.userId, userId), eq(articles.id, articleId)));
 }
 
+// 본인(userId) 소유의 기사만 삭제한다. 삭제된 행이 있으면 true.
+export async function deleteArticle(userId: string, articleId: number) {
+  const deleted = await db
+    .delete(articles)
+    .where(and(eq(articles.userId, userId), eq(articles.id, articleId)))
+    .returning({ id: articles.id });
+  return deleted.length > 0;
+}
+
 export type ArticleWithCategory =Awaited<ReturnType<typeof getArticlePage>>[number];

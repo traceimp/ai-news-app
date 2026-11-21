@@ -1,4 +1,5 @@
 import type { ArticleWithCategory } from "@/db/queries";
+import { DeleteArticleButton } from "@/components/DeleteArticleButton";
 import { SaveToNotionButton } from "@/components/SaveToNotionButton";
 import { getCategoryColor } from "@/lib/category-colors";
 
@@ -19,8 +20,9 @@ export function NewsCard({ article }: { article: ArticleWithCategory }) {
   const badgeClass = getCategoryColor(article.categoryName ? article.categoryColor : null).badge;
 
   return (
-    <article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="flex items-center justify-between gap-2">
+    <article className="relative flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+      <DeleteArticleButton articleId={article.id} />
+      <div className="flex items-center justify-between gap-2 pr-6">
         <span
           className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${badgeClass}`}
         >
