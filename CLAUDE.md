@@ -32,6 +32,9 @@ UI를 만들거나 수정할 때는 `ui.md`(UI 가이드: 디자인 토큰, 대�
 - `npm run lint` — ESLint (`eslint` 직접 실행, `next lint` 아님)
 - 테스트 러너는 아직 설정되지 않았다.
 
+### 커스텀 슬래시 명령 (`.claude/commands/`)
+- `/news-workflow [브랜치-이름]` — 새 기능 개발 워크플로우. main 브랜치 확인 → 새 브랜치 생성(이름이 없으면 기능을 물어 영어 소문자-하이픈 이름 제안) → 개발 시작 안내 → 사용자가 '완료'/'done' 입력 시 변경 파일 목록·커밋 메시지 제안 후 커밋하고 main에 병합 → 작업 요약. 새 기능을 개발할 때 이 명령으로 시작한다.
+
 ## Next.js 주의사항
 
 `AGENTS.md`에 따르면 이 Next.js(16.4.5)는 학습 데이터와 API/규칙이 다를 수 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 관련 가이드를 읽고 deprecation 알림을 따른다. (`AGENTS.md`의 해당 블록은 `next dev`가 다시 생성하므로 삭제하지 않는다.)
