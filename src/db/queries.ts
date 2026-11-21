@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { CATEGORY_PALETTE, pickUnusedColor } from "@/lib/category-colors";
 import { db } from "./index";
 import { articles, categories } from "./schema";
@@ -16,12 +16,25 @@ export async function getCategories(userId: string) {
 
 export type ArticleFilter = "all" | "uncategorized" | number;
 
-// 카테고리별 기사 수. 카테고리 바의 칩에 표시한다.
-export async function getArticleCounts(userId: string) {
+// 키워드 검색 조건: 한국어 제목·요약, 원문 제목에서 대소문자 구분 없이 부분 일치.
+// LIKE 와일드카드(%, _, \)는 이스케이프해 입력한 글자 그대로 검색한다.
+function keywordCondition(keyword?: string) {
+  const trimmed = keyword?.trim();
+  if (!trimmed) return undefined;
+  const pattern = `%${trimmed.replace(/[\\%_]/g, "\\$&")}%`;
+  return or(
+    ilike(articles.titleKo, pattern),
+    ilike(articles.summaryKo, pattern),
+    ilike(articles.originalTitle, pattern),
+  );
+}
+
+// 카테고리별 기사 수. 카테고리 바의 칩에 표시한다. 검색어가 있으면 검색 결과 기준으로 센다.
+export async function getArticleCounts(userId: string, keyword?: string) {
   const rows = await db
     .select({ categoryId: articles.categoryId, count: sql<number>`count(*)::int` })
     .from(articles)
-    .where(eq(articles.userId, userId))
+    .where(and(eq(articles.userId, userId), keywordCondition(keyword)))
     .groupBy(articles.categoryId);
 
   const byCategory = new Map<number, number>();
@@ -42,13 +55,17 @@ export async function getArticlePage(
   filter: ArticleFilter,
   page: number,
   pageSize: number,
+  keyword?: string,
 ) {
-  const where =
+  const where = and(
+    eq(articles.userId, userId),
     filter === "all"
-      ? eq(articles.userId, userId)
+      ? undefined
       : filter === "uncategorized"
-        ? and(eq(articles.userId, userId), isNull(articles.categoryId))
-        : and(eq(articles.userId, userId), eq(articles.categoryId, filter));
+        ? isNull(articles.categoryId)
+        : eq(articles.categoryId, filter),
+    keywordCondition(keyword),
+  );
 
   return db
     .select({

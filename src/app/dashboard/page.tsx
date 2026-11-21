@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getArticleCounts, getArticlePage, getCategories } from "@/db/queries";
 import { Pagination } from "@/components/Pagination";
 import { CategoryBar, type CategoryFilter } from "@/components/CategoryBar";
+import { SearchBar } from "@/components/SearchBar";
 import { NewsCard } from "@/components/NewsCard";
 import { FetchNewsButton } from "@/components/FetchNewsButton";
 
@@ -51,10 +52,15 @@ async function DashboardContent({
   const { userId } = await auth();
   if (!userId) redirect("/"); // 로그인 화면은 홈에 있다.
 
-  const [categories, counts, params] = await Promise.all([
+  const params = await searchParams;
+
+  // ?q= 값 해석: 앞뒤 공백은 지우고, 비어 있으면 검색하지 않는다.
+  const rawQuery = Array.isArray(params.q) ? params.q[0] : params.q;
+  const query = (rawQuery ?? "").trim().slice(0, 100);
+
+  const [categories, counts] = await Promise.all([
     getCategories(userId),
-    getArticleCounts(userId),
-    searchParams,
+    getArticleCounts(userId, query),
   ]);
 
   // ?category= 값 해석: 내 카테고리에 없는 값은 '전체'로 본다.
@@ -80,27 +86,47 @@ async function DashboardContent({
   const requested = Number.parseInt(rawPage ?? "1", 10);
   const page = Math.min(Math.max(Number.isNaN(requested) ? 1 : requested, 1), totalPages);
 
-  const visible = filteredTotal === 0 ? [] : await getArticlePage(userId, selected, page, PAGE_SIZE);
+  const visible =
+    filteredTotal === 0 ? [] : await getArticlePage(userId, selected, page, PAGE_SIZE, query);
 
-  // 페이지 이동 시 카테고리 필터를 유지한다.
-  const hrefFor = (target: number) => {
-    const query = new URLSearchParams();
-    if (selected !== "all") query.set("category", String(selected));
-    if (target > 1) query.set("page", String(target));
-    const qs = query.toString();
-    return qs ? `/dashboard?${qs}` : "/dashboard";
+  // 주소 만들기: 카테고리 필터와 검색어를 유지한다.
+  const buildHref = (target: number, withQuery = true) => {
+    const qs = new URLSearchParams();
+    if (selected !== "all") qs.set("category", String(selected));
+    if (withQuery && query) qs.set("q", query);
+    if (target > 1) qs.set("page", String(target));
+    const str = qs.toString();
+    return str ? `/dashboard?${str}` : "/dashboard";
   };
+  const hrefFor = (target: number) => buildHref(target);
+
+  // 검색어가 있으면 결과 없음/없는 뉴스 문구를 구분한다.
+  const emptyMessage = query
+    ? `'${query}'에 해당하는 뉴스가 없어요.`
+    : counts.total === 0
+      ? "아직 가져온 뉴스가 없어요."
+      : "이 카테고리에는 뉴스가 없어요.";
 
   return (
     <>
-      <CategoryBar categories={categories} counts={counts} selected={selected} />
+      {/* 카테고리 바와 같은 줄의 오른쪽 끝에 검색창 (좁은 화면에서는 아래로 내려간다) */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <CategoryBar categories={categories} counts={counts} selected={selected} query={query} />
+        <SearchBar
+          query={query}
+          category={selected === "all" ? undefined : String(selected)}
+          clearHref={buildHref(1, false)}
+        />
+      </div>
+
+      {query && (
+        <p aria-live="polite" className="text-sm text-slate-500 dark:text-neutral-400">
+          &lsquo;{query}&rsquo; 검색 결과 {filteredTotal}건
+        </p>
+      )}
 
       {visible.length === 0 ? (
-        <p className="py-16 text-center text-slate-500 dark:text-neutral-400">
-          {counts.total === 0
-            ? "아직 가져온 뉴스가 없어요."
-            : "이 카테고리에는 뉴스가 없어요."}
-        </p>
+        <p className="py-16 text-center text-slate-500 dark:text-neutral-400">{emptyMessage}</p>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

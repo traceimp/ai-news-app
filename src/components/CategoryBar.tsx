@@ -8,6 +8,7 @@ type Props = {
   categories: { id: number; name: string; color: string | null }[];
   counts: { total: number; uncategorized: number; byCategory: Map<number, number> };
   selected: CategoryFilter;
+  query: string; // 현재 검색어 (없으면 빈 문자열)
 };
 
 const chipBase =
@@ -48,11 +49,20 @@ function Chip({
 }
 
 // 항목 순서: 전체 → 사용자 카테고리 → 미분류 → 카테고리 추가 버튼
-export function CategoryBar({ categories, counts, selected }: Props) {
+// 검색어가 있으면 카테고리를 바꿔도 검색어를 유지한다.
+export function CategoryBar({ categories, counts, selected, query }: Props) {
+  const hrefFor = (category?: string) => {
+    const params = new URLSearchParams();
+    if (category) params.set("category", category);
+    if (query) params.set("q", query);
+    const qs = params.toString();
+    return qs ? `/dashboard?${qs}` : "/dashboard";
+  };
+
   return (
     <nav aria-label="카테고리" className="flex flex-wrap items-center gap-2">
       <Chip
-        href="/dashboard"
+        href={hrefFor()}
         label="전체"
         count={counts.total}
         active={selected === "all"}
@@ -60,7 +70,7 @@ export function CategoryBar({ categories, counts, selected }: Props) {
       {categories.map((c) => (
         <Chip
           key={c.id}
-          href={`/dashboard?category=${c.id}`}
+          href={hrefFor(String(c.id))}
           label={c.name}
           dot={getCategoryColor(c.color).dot}
           count={counts.byCategory.get(c.id) ?? 0}
@@ -68,7 +78,7 @@ export function CategoryBar({ categories, counts, selected }: Props) {
         />
       ))}
       <Chip
-        href="/dashboard?category=uncategorized"
+        href={hrefFor("uncategorized")}
         label="미분류"
         dot={UNCATEGORIZED_COLOR.dot}
         count={counts.uncategorized}
