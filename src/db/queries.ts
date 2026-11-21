@@ -8,7 +8,11 @@ import { articles, categories } from "./schema";
 
 export async function getCategories(userId: string) {
   return db
-    .select({ id: categories.id, name: categories.name, color: categories.color })
+    .select({
+      id: categories.id,
+      name: categories.name,
+      color: categories.color,
+    })
     .from(categories)
     .where(eq(categories.userId, userId))
     .orderBy(asc(categories.createdAt), asc(categories.id));
@@ -29,10 +33,22 @@ function keywordCondition(keyword?: string) {
   );
 }
 
+// 수집된 기사 총 개수. 대시보드 상단 배지용이라 카테고리·검색어와 무관하게 센다.
+export async function getTotalArticleCount(userId: string) {
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(articles)
+    .where(eq(articles.userId, userId));
+  return row?.count ?? 0;
+}
+
 // 카테고리별 기사 수. 카테고리 바의 칩에 표시한다. 검색어가 있으면 검색 결과 기준으로 센다.
 export async function getArticleCounts(userId: string, keyword?: string) {
   const rows = await db
-    .select({ categoryId: articles.categoryId, count: sql<number>`count(*)::int` })
+    .select({
+      categoryId: articles.categoryId,
+      count: sql<number>`count(*)::int`,
+    })
     .from(articles)
     .where(and(eq(articles.userId, userId), keywordCondition(keyword)))
     .groupBy(articles.categoryId);
@@ -114,7 +130,12 @@ export async function insertNewArticles(userId: string, items: NewArticle[]) {
   return inserted.length;
 }
 
-export const DEFAULT_CATEGORIES = ["모델/제품", "연구", "투자·비즈니스", "규제·윤리"];
+export const DEFAULT_CATEGORIES = [
+  "모델/제품",
+  "연구",
+  "투자·비즈니스",
+  "규제·윤리",
+];
 
 // 처음 쓰는 사용자(카테고리가 하나도 없음)에게만 기본 카테고리를 만들어 준다.
 // 사용자가 모두 지운 뒤에도 다시 생기지는 않도록 "비어 있을 때만" 만들지만,
@@ -197,7 +218,11 @@ export async function getArticleForNotion(userId: string, articleId: number) {
   return row ?? null;
 }
 
-export async function setArticleNotionUrl(userId: string, articleId: number, url: string) {
+export async function setArticleNotionUrl(
+  userId: string,
+  articleId: number,
+  url: string,
+) {
   await db
     .update(articles)
     .set({ notionPageUrl: url })
@@ -213,4 +238,6 @@ export async function deleteArticle(userId: string, articleId: number) {
   return deleted.length > 0;
 }
 
-export type ArticleWithCategory =Awaited<ReturnType<typeof getArticlePage>>[number];
+export type ArticleWithCategory = Awaited<
+  ReturnType<typeof getArticlePage>
+>[number];

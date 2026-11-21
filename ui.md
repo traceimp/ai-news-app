@@ -68,6 +68,13 @@
 - 오른쪽: **뉴스 가져오기** 버튼 (Primary). 모바일에서는 제목 아래로 내려가 전체 너비(`w-full sm:w-auto`)를 쓴다.
 - 레이아웃: `flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between`
 
+### 4.1-0 뉴스 총 개수 배지 (`NewsCountBadge`)
+
+- 위치: 페이지 제목 "AI 뉴스" 바로 오른쪽(`flex flex-wrap items-center gap-2`, 좁으면 아래로 줄바꿈).
+- 문구: `총 N개의 뉴스` (천 단위 쉼표). DB에서 로그인 사용자의 기사 수를 센 값이며, 카테고리·검색 필터와 무관한 전체 개수다. 삭제·가져오기 후 새로고침되면 갱신된다.
+- 스타일: 카드 카테고리 배지와 같은 톤 `rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300`, `aria-live="polite"`.
+- 로딩 중에는 `h-5 w-24 animate-pulse rounded-full` 스켈레톤을 보여준다.
+
 ### 4.1-1 키워드 검색창 (카테고리 바와 같은 줄의 오른쪽 끝, `SearchBar`)
 
 - 배치: `flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between` 안에 카테고리 바(왼쪽)와 검색창(오른쪽 끝, `lg:w-96`)을 둔다. 좁은 화면(lg 미만)에서는 카테고리 바 아래로 내려간다.
