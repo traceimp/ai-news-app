@@ -7,6 +7,7 @@ import { Pagination } from "@/components/Pagination";
 import { CategoryBar, type CategoryFilter } from "@/components/CategoryBar";
 import { SearchBar } from "@/components/SearchBar";
 import { NewsCard } from "@/components/NewsCard";
+import { NewsCardSkeleton } from "@/components/NewsCardSkeleton";
 import { FetchNewsButton } from "@/components/FetchNewsButton";
 import { NewsCountBadge } from "@/components/NewsCountBadge";
 
@@ -186,10 +187,7 @@ function DashboardSkeleton() {
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="h-48 animate-pulse rounded-xl bg-slate-200 dark:bg-neutral-800"
-          />
+          <NewsCardSkeleton key={i} />
         ))}
       </div>
     </div>
