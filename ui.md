@@ -180,7 +180,7 @@
 - **번역 전 카드**: `titleKo`가 없으면 원문 제목을 보여주고, 요약 자리에 `text-sm text-slate-500`로 "번역 대기 중"을 표시한다.
 - **빈 목록**: 카드 영역 가운데에 "아직 가져온 뉴스가 없어요. '뉴스 가져오기'를 눌러보세요." (`py-16 text-center text-slate-500`)
 - **필터 결과 없음**: "이 카테고리에는 뉴스가 없어요."
-- **로딩 스켈레톤**: 카드 모양의 `animate-pulse` 블록(`bg-slate-200 dark:bg-neutral-800`)을 3개 보여준다.
+- **로딩 스켈레톤**: `NewsCardSkeleton`(카드와 같은 배치의 `animate-pulse` 블록, `bg-slate-200 dark:bg-neutral-800`)을 3개 보여준다. 대시보드 `DashboardSkeleton`이 Suspense fallback으로 사용한다.
 - **오류**: 안내 박스에 `border-red-200 bg-red-50 text-red-700` 스타일을 쓰고 다시 시도 버튼을 둔다.
 
 ## 7. 공통 컴포넌트 규칙
