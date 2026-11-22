@@ -42,7 +42,12 @@ export function SaveToNotionButton({
         >
           저장 완료 ✓
         </button>
-        <a href={savedUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
+        <a
+          href={savedUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
           Notion에서 보기 ↗
         </a>
       </div>
@@ -56,7 +61,7 @@ export function SaveToNotionButton({
         onClick={handleClick}
         disabled={isPending || disabled}
         title={disabled ? "번역이 끝난 뒤에 저장할 수 있어요" : undefined}
-        className="cursor-pointer rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+        className="cursor-pointer rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-indigo-600 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-300 disabled:hover:bg-transparent disabled:hover:text-slate-700 dark:border-neutral-700 dark:text-neutral-200 dark:hover:border-indigo-400 dark:hover:bg-indigo-950 dark:hover:text-indigo-300 dark:disabled:hover:border-neutral-700 dark:disabled:hover:text-neutral-200"
       >
         {isPending ? "저장 중…" : "Notion 저장"}
       </button>

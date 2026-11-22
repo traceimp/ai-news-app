@@ -122,41 +122,30 @@
 
 ### 5.1 구성 (위에서 아래 순서)
 
-1. 상단 줄: **카테고리 배지**(왼쪽) · 출처 + 발행일(오른쪽)
-2. **한국어 제목**
-3. **한국어 요약** (3줄 말줄임: `line-clamp-3`)
-4. 하단 줄: **원문 보기** 링크(왼쪽) · **Notion 저장** 버튼(오른쪽)
+1. 상단 줄: **카테고리 배지**(색 점 포함, 왼쪽) · **출처**(`font-medium`) + 발행일(`tabular-nums`, 오른쪽)
+2. **한국어 제목** (가장 진하게, 3줄 말줄임)
+3. **한국어 요약** (제목보다 한 단계 연한 `slate-600`, 3줄 말줄임)
+4. 구분선(`border-t`) 아래 하단 줄: **원문 보기 ↗** 링크(왼쪽) · **Notion 저장** 버튼(오른쪽)
+
+- 텍스트 위계: 제목 `slate-900` > 요약 `slate-600` > 메타 `slate-500`(출처만 `slate-600`). 모두 AA 대비를 만족한다.
+- 간격: 카드 `p-5 sm:p-6`, 블록 간 `gap-4`, 제목·요약 사이 `space-y-2.5`. 요약 줄 간격은 `leading-7`.
 
 ### 5.2 스타일
 
 ```tsx
-<article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
-  <div className="flex items-center justify-between gap-2">
-    <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-      연구
-    </span>
-    <span className="text-xs text-slate-500 dark:text-neutral-400">
-      TechCrunch · 2026.11.13
-    </span>
-  </div>
-  <h3 className="break-keep text-base font-semibold leading-snug text-slate-900 sm:text-lg dark:text-neutral-100">
-    한국어 제목
-  </h3>
-  <p className="line-clamp-3 break-keep text-sm leading-relaxed text-slate-700 dark:text-neutral-300">
-    한국어 요약
-  </p>
-  <div className="mt-auto flex items-center justify-between pt-2">
-    <a className="text-sm text-slate-500 underline-offset-4 hover:text-indigo-600 hover:underline" href="#">
-      원문 보기 ↗
-    </a>
-    <button className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100">
-      Notion 저장
-    </button>
-  </div>
+<article className="group relative flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-900/5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900">
+  {/* 상단: 배지(색 점) · 출처 · 날짜 / 제목(group-hover:text-indigo-700) / 요약 / 구분선 + 하단 줄 */}
 </article>
 ```
 
-- **삭제 버튼**: 카드(`relative`) 오른쪽 상단에 X 아이콘 버튼(`DeleteArticleButton`, `absolute right-2 top-2 size-7`, `aria-label="뉴스 삭제"`)을 둔다. 누르면 DB에서 해당 기사를 삭제(본인 `userId` 소유만)하고 목록을 다시 불러와 카드가 사라진다. 삭제 중에는 비활성화, 실패 시 카드 안에 `text-xs text-red-600`로 사유를 보여준다. 상단 줄은 겹치지 않도록 `pr-6`을 둔다.
+- **hover 인터랙션**(카드 `group` 기준, 모두 `motion-reduce` 시 이동 제거):
+  - 카드가 `-translate-y-0.5`로 살짝 떠오르고 그림자(`shadow-lg`)와 테두리가 진해진다.
+  - 제목 색이 `indigo-700`(다크 `indigo-300`)으로 부드럽게 바뀐다.
+  - `원문 보기 ↗`의 화살표가 오른쪽 위로 살짝 움직이고 링크가 인디고로 바뀐다.
+  - Notion 저장 버튼은 인디고 테두리·배경 틴트로 바뀐다(비활성일 때는 변하지 않는다).
+  - 삭제 버튼은 hover 가능한 기기(`[@media(hover:hover)]`)에서만 평소 숨겨졌다가 카드 hover·포커스 때 나타난다. 터치 기기에서는 항상 보인다.
+
+- **삭제 버튼**: 카드(`relative`) 오른쪽 상단에 X 아이콘 버튼(`DeleteArticleButton`, `absolute right-3 top-3 size-7`, `aria-label="뉴스 삭제"`)을 둔다. 누르면 DB에서 해당 기사를 삭제(본인 `userId` 소유만)하고 목록을 다시 불러와 카드가 사라진다. 삭제 중에는 비활성화, 실패 시 카드 안에 `text-xs text-red-600`로 사유를 보여준다. 상단 줄은 겹치지 않도록 `pr-7`을 둔다.
 - 카드 높이는 그리드 안에서 맞춰지도록 `flex flex-col` + 하단 줄에 `mt-auto`를 쓴다.
 - 원문 링크는 `target="_blank" rel="noopener noreferrer"`로 연다.
 - 카테고리 배지: 카테고리 색상 톤(4.2 참고), **미분류**는 `bg-slate-100 text-slate-600`으로 구분한다.

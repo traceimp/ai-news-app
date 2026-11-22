@@ -28,9 +28,17 @@ export function DeleteArticleButton({ articleId }: { articleId: number }) {
         disabled={isPending}
         aria-label="뉴스 삭제"
         title="뉴스 삭제"
-        className="absolute right-2 top-2 flex size-7 cursor-pointer items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+        className="absolute right-3 top-3 flex size-7 cursor-pointer items-center justify-center rounded-full text-slate-500 transition hover:bg-red-50 hover:text-red-600 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 dark:text-neutral-400 dark:hover:bg-red-950 dark:hover:text-red-400"
       >
-        <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+        <svg
+          viewBox="0 0 16 16"
+          className="size-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
           <path d="M4 4l8 8M12 4l-8 8" />
         </svg>
       </button>
