@@ -37,7 +37,7 @@
 | 카드 요약 | `text-sm leading-relaxed` |
 | 메타 정보 | `text-xs` |
 
-- 현재 `globals.css`의 `body`가 `font-family: Arial`로 고정되어 Geist 변수가 적용되지 않는다. 한글이 잘 보이는 폰트(예: Pretendard)를 도입하거나 `font-sans`를 쓰도록 정리한다. 폰트를 바꿀 때는 사용자에게 먼저 확인한다.
+- **폰트**: Pretendard 가변 폰트(`pretendard` npm 패키지의 동적 서브셋)를 `globals.css`에서 import하고, `@theme inline`의 `--font-sans`에 `"Pretendard Variable"` → 시스템 한글 폰트 순으로 지정한다. `body`에 `font-family`를 따로 고정하지 않으며(Tailwind `font-sans` 사용), 코드용 `font-mono`만 Geist Mono를 쓴다. 폰트를 바꿀 때는 사용자에게 먼저 확인한다.
 
 ## 3. 전체 레이아웃
 
