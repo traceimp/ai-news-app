@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ClerkProvider, Show, UserButton } from "@clerk/nextjs";
 import { Geist_Mono } from "next/font/google";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -26,12 +27,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <ClerkProvider dynamic>
             <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur sm:px-6 dark:border-neutral-800 dark:bg-neutral-900/80">
-              <span className="text-lg font-bold tracking-tight">AI 뉴스 수집기</span>
+              <span className="text-lg font-bold tracking-tight">
+                AI 뉴스 수집기
+              </span>
               <Show when="signed-in">
                 <UserButton />
               </Show>
             </header>
             {children}
+            <Footer />
           </ClerkProvider>
         </Suspense>
       </body>

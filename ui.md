@@ -59,6 +59,7 @@
 - 헤더는 `layout.tsx`에 있다. 하단 구분선을 두고 스크롤 시 상단에 고정한다: `sticky top-0 z-10 border-b bg-white/80 backdrop-blur dark:bg-neutral-900/80`
 - 메인 영역: `flex-1 bg-slate-50 py-8 dark:bg-neutral-950`
 - 섹션 간격은 `space-y-6` 또는 `gap-6`으로 통일한다.
+- 푸터(`Footer`, `layout.tsx`에서 `children` 아래에 렌더링)는 모든 페이지 맨 아래에 둔다. 문구는 "Copyright 2026 AI 뉴스 수집기. Powered by Claude."이고, 헤더와 같은 톤(`border-t border-slate-200 bg-white dark:border-neutral-800 dark:bg-neutral-900`)에 가운데 정렬 메타 텍스트(`text-xs text-slate-500 dark:text-neutral-400`)로 단순하게 만든다. 내용은 콘텐츠 컨테이너 너비를 따른다.
 
 ## 4. 대시보드 (메인 화면)
 
