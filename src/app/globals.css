@@ -2,6 +2,9 @@
 /* Pretendard 가변 폰트(동적 서브셋: 화면에 쓰인 글자 조각만 내려받는다) */
 @import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 
+/* 다크 모드는 <html>의 .dark 클래스로 켠다(우측 상단 ThemeToggle). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -16,11 +19,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  color-scheme: dark;
 }
 
 body {

@@ -24,7 +24,7 @@ export function FetchNewsButton() {
         type="button"
         onClick={handleClick}
         disabled={isPending}
-        className="w-full cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        className="w-full cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         {isPending ? "가져오는 중…" : "뉴스 가져오기"}
       </button>
@@ -42,13 +42,13 @@ export function FetchNewsButton() {
             {result.failed > 0 && (
               <>
                 {" · "}
-                <span className="text-red-600">번역 실패 {result.failed}건</span>
+                <span className="text-red-600 dark:text-red-400">번역 실패 {result.failed}건</span>
               </>
             )}
             {result.failedSources.length > 0 && (
               <>
                 {" · "}
-                <span className="text-red-600">
+                <span className="text-red-600 dark:text-red-400">
                   실패 {result.failedSources.length}곳 ({result.failedSources.join(", ")})
                 </span>
               </>
@@ -57,13 +57,13 @@ export function FetchNewsButton() {
         )}
 
         {result?.ok && result.aiError && (
-          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
             {result.aiError}
           </p>
         )}
 
         {result && !result.ok && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
             {result.message}
           </p>
         )}

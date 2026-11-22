@@ -82,7 +82,7 @@ export function AddCategoryButton() {
           type="button"
           onClick={submit}
           disabled={isPending || name.trim() === ""}
-          className="cursor-pointer rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="cursor-pointer rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isPending ? "추가 중…" : "추가"}
         </button>
@@ -95,7 +95,7 @@ export function AddCategoryButton() {
           취소
         </button>
       </div>
-      <p aria-live="polite" className="min-h-4 text-xs text-red-600">
+      <p aria-live="polite" className="min-h-4 text-xs text-red-600 dark:text-red-400">
         {error}
       </p>
     </div>

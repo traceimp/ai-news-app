@@ -24,7 +24,11 @@
 | 보조 텍스트(출처·날짜) | `text-slate-500` | `dark:text-neutral-400` |
 | 강조(Primary) | `bg-indigo-600 hover:bg-indigo-700 text-white` | 동일 |
 
-- 다크 모드는 기존 `prefers-color-scheme` 설정을 따르며, Tailwind의 `dark:` 변형으로 대응한다.
+- 다크 모드는 **클래스 기반**이다. `globals.css`의 `@custom-variant dark (&:where(.dark, .dark *));`로 `<html>`에 `.dark` 클래스가 있을 때 `dark:` 변형이 적용된다.
+  - 헤더 오른쪽 위의 **테마 토글**(`ThemeToggle`, UserButton 왼쪽, 로그인 전에도 표시)을 누를 때마다 다크/라이트가 바뀌고 선택은 `localStorage`의 `theme`(`dark`/`light`)에 저장된다.
+  - 저장된 선택이 없으면 OS 설정(`prefers-color-scheme`)을 따른다. `layout.tsx`의 `<head>` 인라인 스크립트가 첫 페인트 전에 클래스를 붙여 깜빡임을 막는다.
+  - 토글 버튼: `size-9 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-800`, `aria-label="다크 모드/라이트 모드 전환"`. 라이트에서는 달, 다크에서는 해 아이콘을 `dark:hidden`/`hidden dark:block`으로 전환한다(상태 없이 CSS만으로 전환해 하이드레이션 불일치가 없다).
+  - 새 UI를 만들 때는 위 표의 다크 클래스를 항상 함께 지정한다. 오류 박스는 `dark:border-red-900 dark:bg-red-950 dark:text-red-300`, 오류 텍스트는 `dark:text-red-400`, `ring-offset`을 쓰는 버튼은 `dark:focus-visible:ring-offset-neutral-900`을 덧붙인다.
 - 강조색은 인디고 하나만 쓴다. 버튼, 선택된 카테고리, 포커스 링에만 사용해 화면이 산만해지지 않게 한다.
 
 ### 타이포그래피
@@ -43,7 +47,7 @@
 
 ```
 ┌──────────────────────────────────────────────┐
-│ 헤더: AI 뉴스 수집기              [UserButton] │
+│ 헤더: AI 뉴스 수집기       [🌙 토글][UserButton] │
 ├──────────────────────────────────────────────┤
 │ 페이지 제목 / 설명           [뉴스 가져오기]    │
 │                                              │
